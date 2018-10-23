@@ -6,11 +6,11 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WeChatPlugin/Sources/Managers/TKWebServerManager.m"
-            timestampString = "552293622.5459599"
+            timestampString = "552367112.434027"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "40"
@@ -22,11 +22,11 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WeChatPlugin/Sources/Managers/TKWebServerManager.m"
-            timestampString = "552293622.546502"
+            timestampString = "552367112.4341379"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "58"
@@ -35,14 +35,14 @@
             landmarkType = "7">
             <Locations>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "-[TKWebServerManager addHandleForSearchUser]"
                   moduleName = "WeChatPlugin"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/boohee/Documents/boohee/WeChatPlugin-MacOS/WeChatPlugin/Sources/Managers/TKWebServerManager.m"
-                  timestampString = "552293622.995996"
+                  timestampString = "552300972.300886"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "58"
@@ -50,14 +50,14 @@
                   offsetFromSymbolStart = "36">
                </Location>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "__44-[TKWebServerManager addHandleForSearchUser]_block_invoke"
                   moduleName = "WeChatPlugin"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/boohee/Documents/boohee/WeChatPlugin-MacOS/WeChatPlugin/Sources/Managers/TKWebServerManager.m"
-                  timestampString = "552293623.001572"
+                  timestampString = "552300972.304292"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "60"
@@ -65,14 +65,14 @@
                   offsetFromSymbolStart = "53">
                </Location>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "__destroy_helper_block_.86"
                   moduleName = "WeChatPlugin"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/boohee/Documents/boohee/WeChatPlugin-MacOS/WeChatPlugin/Sources/Managers/TKWebServerManager.m"
-                  timestampString = "552293623.003948"
+                  timestampString = "552300972.308035"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "58"
@@ -89,7 +89,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WeChatPlugin/Sources/Managers/TKWebServerManager.m"
-            timestampString = "552293622.546783"
+            timestampString = "552367112.434206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "88"
@@ -101,11 +101,11 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WeChatPlugin/Sources/Managers/TKWebServerManager.m"
-            timestampString = "552293622.547057"
+            timestampString = "552367112.434265"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "64"
@@ -114,14 +114,14 @@
             landmarkType = "7">
             <Locations>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "__44-[TKWebServerManager addHandleForSearchUser]_block_invoke"
                   moduleName = "WeChatPlugin"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/boohee/Documents/boohee/WeChatPlugin-MacOS/WeChatPlugin/Sources/Managers/TKWebServerManager.m"
-                  timestampString = "552293623.01003"
+                  timestampString = "552300972.317857"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "64"
@@ -129,14 +129,14 @@
                   offsetFromSymbolStart = "791">
                </Location>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "__44-[TKWebServerManager addHandleForSearchUser]_block_invoke.56"
                   moduleName = "WeChatPlugin"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/boohee/Documents/boohee/WeChatPlugin-MacOS/WeChatPlugin/Sources/Managers/TKWebServerManager.m"
-                  timestampString = "552293623.012068"
+                  timestampString = "552300972.321642"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "64"
@@ -144,14 +144,14 @@
                   offsetFromSymbolStart = "15">
                </Location>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "__destroy_helper_block_.77"
                   moduleName = "WeChatPlugin"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/boohee/Documents/boohee/WeChatPlugin-MacOS/WeChatPlugin/Sources/Managers/TKWebServerManager.m"
-                  timestampString = "552293623.014195"
+                  timestampString = "552300972.324628"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "64"
@@ -159,6 +159,54 @@
                   offsetFromSymbolStart = "17">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WeChatPlugin/Sources/Hook/WeChat+hook.m"
+            timestampString = "559538273.634261"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "268"
+            endingLineNumber = "268"
+            landmarkName = "-hook_onLoginButtonClicked:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WeChatPlugin/Sources/Hook/WeChat+hook.m"
+            timestampString = "559538273.63591"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "297"
+            endingLineNumber = "297"
+            landmarkName = "-hook_sendLogoutCGIWithCompletion:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WeChatPlugin/Sources/Managers/TKRemoteControlManager.m"
+            timestampString = "552312480.4384919"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "139"
+            endingLineNumber = "139"
+            landmarkName = "+executePluginCommand:"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

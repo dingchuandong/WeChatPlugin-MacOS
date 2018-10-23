@@ -44,6 +44,7 @@
       allowLocationSimulation = "YES">
       <PathRunnable
          runnableDebuggingMode = "0"
+         BundleIdentifier = "com.tencent.xinWeChat"
          FilePath = "/Applications/WeChatOwn.app">
       </PathRunnable>
       <MacroExpansion>
