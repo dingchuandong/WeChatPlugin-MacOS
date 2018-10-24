@@ -13,11 +13,13 @@
 #import "WeChatPlugin.h"
 
 static NSString * const kTKPreventRevokeEnableKey = @"kTKPreventRevokeEnableKey";
+static NSString * const kTKPreventSelfRevokeEnableKey = @"kTKPreventSelfRevokeEnableKey";
 static NSString * const kTKAutoReplyEnableKey = @"kTKAutoReplyEnableKey";
 static NSString * const kTKAutoAuthEnableKey = @"kTKAutoAuthEnableKey";
 static NSString * const kTKAutoLoginEnableKey = @"kTKAutoLoginEnableKey";
 static NSString * const kTKOnTopKey = @"kTKOnTopKey";
 static NSString * const kTKForbidCheckVersionKey = @"kTKForbidCheckVersionKey";
+static NSString * const kTKAlfredEnableKey = @"kTKAlfredEnableKey";
 static NSString * const kTKWeChatResourcesPath = @"/Applications/WeChat.app/Contents/MacOS/WeChatPlugin.framework/Resources/";
 static NSString * const kTKWeChatRemotePlistPath = @"https://raw.githubusercontent.com/TKkk-iOSer/WeChatPlugin-MacOS/master/Other/Products/Debug/WeChatPlugin.framework/Resources/Info.plist";
 
@@ -47,11 +49,13 @@ static NSString * const kTKWeChatRemotePlistPath = @"https://raw.githubuserconte
     self = [super init];
     if (self) {
         _preventRevokeEnable = [[NSUserDefaults standardUserDefaults] boolForKey:kTKPreventRevokeEnableKey];
+        _preventSelfRevokeEnable = [[NSUserDefaults standardUserDefaults] boolForKey:kTKPreventSelfRevokeEnableKey];
         _autoReplyEnable = [[NSUserDefaults standardUserDefaults] boolForKey:kTKAutoReplyEnableKey];
         _autoAuthEnable = [[NSUserDefaults standardUserDefaults] boolForKey:kTKAutoAuthEnableKey];
         _autoLoginEnable = [[NSUserDefaults standardUserDefaults] boolForKey:kTKAutoLoginEnableKey];
         _onTop = [[NSUserDefaults standardUserDefaults] boolForKey:kTKOnTopKey];
         _forbidCheckVersion = [[NSUserDefaults standardUserDefaults] boolForKey:kTKForbidCheckVersionKey];
+        _alfredEnable = [[NSUserDefaults standardUserDefaults] boolForKey:kTKAlfredEnableKey];
     }
     return self;
 }
@@ -59,6 +63,12 @@ static NSString * const kTKWeChatRemotePlistPath = @"https://raw.githubuserconte
 - (void)setPreventRevokeEnable:(BOOL)preventRevokeEnable {
     _preventRevokeEnable = preventRevokeEnable;
     [[NSUserDefaults standardUserDefaults] setBool:preventRevokeEnable forKey:kTKPreventRevokeEnableKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)setPreventSelfRevokeEnable:(BOOL)preventSelfRevokeEnable {
+    _preventSelfRevokeEnable = preventSelfRevokeEnable;
+    [[NSUserDefaults standardUserDefaults] setBool:preventSelfRevokeEnable forKey:kTKPreventSelfRevokeEnableKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -92,6 +102,12 @@ static NSString * const kTKWeChatRemotePlistPath = @"https://raw.githubuserconte
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (void)setAlfredEnable:(BOOL)alfredEnable {
+    _alfredEnable = alfredEnable;
+    [[NSUserDefaults standardUserDefaults] setBool:_alfredEnable forKey:kTKAlfredEnableKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 #pragma mark - 自动回复
 - (NSArray *)autoReplyModels {
     if (!_autoReplyModels) {
@@ -117,6 +133,7 @@ static NSString * const kTKWeChatRemotePlistPath = @"https://raw.githubuserconte
 #pragma mark - 远程控制
 - (NSArray *)remoteControlModels {
     if (!_remoteControlModels) {
+        __block BOOL needSaveRemoteControlModels = NO;
         _remoteControlModels = ({
             NSArray *originModels = [NSArray arrayWithContentsOfFile:self.remoteControlPlistFilePath];
             NSMutableArray *newRemoteControlModels = [NSMutableArray array];
@@ -124,12 +141,19 @@ static NSString * const kTKWeChatRemotePlistPath = @"https://raw.githubuserconte
                 NSMutableArray *newSubModels = [NSMutableArray array];
                 [subModels enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                     TKRemoteControlModel *model = [[TKRemoteControlModel alloc] initWithDict:obj];
+                    if ([model.executeCommand isEqualToString:@"restartWeChat"]) {
+                        model.executeCommand = @"killWeChat";
+                        needSaveRemoteControlModels = YES;
+                    }
                     [newSubModels addObject:model];
                 }];
                 [newRemoteControlModels addObject:newSubModels];
             }];
             newRemoteControlModels;
         });
+        if (needSaveRemoteControlModels) {
+            [self saveRemoteControlModels];
+        }
     }
     return _remoteControlModels;
 }

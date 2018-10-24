@@ -10,12 +10,14 @@
 //  菜單欄
 "assistant.menu.title" = "微信小助手";
 "assistant.menu.revoke" = "開啟消息防撤回";
+"assistant.menu.revokeSelf" = "攔截自己撤回消息";
 "assistant.menu.autoReply" = "自動回復設置";
 "assistant.menu.newWeChat" = "登錄新微信";
 "assistant.menu.remoteControl" = "遠程控制mac";
 "assistant.menu.windowSticky" = "微信窗口置頂";
 "assistant.menu.freeLogin" = "免認證登錄";
 "assistant.menu.other" = "小助手🌚";
+"assistant.menu.enableAlfred" = "开启 Alfred 功能";
 "assistant.menu.updateAssistant" = "更新小助手…";
 "assistant.menu.aboutAssistant" = "關於小助手";
 
@@ -40,6 +42,7 @@
 "assistant.chat.unMultiSelect" = "取消多選";
 "assistant.chat.readAll" = "一鍵已讀";
 "assistant.chat.clearEmpty" = "清除空會話";
+"assistant.chat.remove" = "移除";
 
 //  遠程控制相關
 "assistant.remoteControl.getList" = "獲取指令";
@@ -120,5 +123,9 @@
 
 //  alfred 搜索
 "assistant.search.member" = "成員：";
+"assistant.search.friend" = "[好友]";
 "assistant.search.group" = "[群聊]";
-
+"assistant.search.official" = "[公衆號]";
+"assistant.search.chatlog" = "以下為聊天記錄👇🏻";
+"assistant.search.message.unread" = "未读";
+"assistant.search.yesterday" = "昨天";

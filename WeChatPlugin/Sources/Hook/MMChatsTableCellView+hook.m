@@ -9,6 +9,7 @@
 #import "MMChatsTableCellView+hook.h"
 #import "WeChatPlugin.h"
 #import "TKIgnoreSessonModel.h"
+#import "TKMessageManager.h"
 
 @implementation NSObject (MMChatsTableCellViewHook)
 
@@ -62,8 +63,7 @@
 }
 
 - (void)hook_menuWillOpen:(NSMenu *)arg1 {
-    MMChatsTableCellView *cellView = (MMChatsTableCellView *)self;
-    MMSessionInfo *sessionInfo = [cellView sessionInfo];
+    MMSessionInfo *sessionInfo = [(MMChatsTableCellView *)self sessionInfo];
     NSString *currentUserName = [objc_getClass("CUtility") GetCurrentUserName];
     
     __block BOOL isIgnore = false;
@@ -85,18 +85,21 @@
     NSMenuItem *clearUnReadItem = [[NSMenuItem alloc] initWithTitle:TKLocalizedString(@"assistant.chat.readAll") action:@selector(contextMenuClearUnRead) keyEquivalent:@""];
     
     NSMenuItem *clearEmptySessionItem = [[NSMenuItem alloc] initWithTitle:TKLocalizedString(@"assistant.chat.clearEmpty") action:@selector(contextMenuClearEmptySession) keyEquivalent:@""];
+    
+    NSMenuItem *removeSessionItem = [[NSMenuItem alloc] initWithTitle:TKLocalizedString(@"assistant.chat.remove") action:@selector(contextMenuRemoveSession) keyEquivalent:@""];
+
     [arg1 addItems:@[[NSMenuItem separatorItem],
                      preventRevokeItem,
                      multipleSelectionItem,
                      clearUnReadItem,
-                     clearEmptySessionItem
+                     clearEmptySessionItem,
+                     removeSessionItem
                      ]];
     [self hook_menuWillOpen:arg1];
 }
 
 - (void)contextMenuStickyBottom {
-    MMChatsTableCellView *cellView = (MMChatsTableCellView *)self;
-    MMSessionInfo *sessionInfo = [cellView sessionInfo];
+    MMSessionInfo *sessionInfo = [(MMChatsTableCellView *)self sessionInfo];
     NSString *currentUserName = [objc_getClass("CUtility") GetCurrentUserName];
     
     NSMutableArray *ignoreSessions = [[TKWeChatPluginConfig sharedConfig] ignoreSessionModels];
@@ -144,14 +147,12 @@
 }
 
 - (void)contextMenuClearUnRead {
-    MessageService *msgService = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("MessageService")];
-    
     MMSessionMgr *sessionMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("MMSessionMgr")];
     NSMutableArray *arrSession = sessionMgr.m_arrSession;
 
     [arrSession enumerateObjectsUsingBlock:^(MMSessionInfo *obj, NSUInteger idx, BOOL * _Nonnull stop) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [msgService ClearUnRead:obj.m_nsUserName FromID:0 ToID:0];
+            [[TKMessageManager shareManager] clearUnRead:obj.m_nsUserName];
         });
     }];
 }
@@ -179,11 +180,31 @@
     }
 }
 
+- (void)contextMenuRemoveSession {
+    MMSessionInfo *sessionInfo = [(MMChatsTableCellView *)self sessionInfo];
+    MMSessionMgr *sessionMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("MMSessionMgr")];
+    
+    BOOL multipleSelection = [[TKWeChatPluginConfig sharedConfig] multipleSelectionEnable];
+    if (multipleSelection) {
+        NSMutableArray *selectSessions = [[TKWeChatPluginConfig sharedConfig] selectSessions];
+        [selectSessions  enumerateObjectsUsingBlock:^(MMSessionInfo *sessionInfo, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSString *sessionUserName = sessionInfo.m_nsUserName;
+            if (sessionUserName.length > 0) {
+                [sessionMgr removeSessionOfUser:sessionInfo.m_nsUserName isDelMsg:NO];
+            }
+        }];
+        [[TKWeChatPluginConfig sharedConfig] setMultipleSelectionEnable:NO];
+        WeChat *wechat = [objc_getClass("WeChat") sharedInstance];
+        [wechat.chatsViewController.tableView reloadData];
+    } else if (sessionInfo.m_nsUserName.length > 0) {
+        [sessionMgr removeSessionOfUser:sessionInfo.m_nsUserName isDelMsg:NO];
+    }
+}
+
 - (void)hook_contextMenuSticky:(id)arg1 {
     [self hook_contextMenuSticky:arg1];
     
-    MMChatsTableCellView *cellView = (MMChatsTableCellView *)self;
-    MMSessionInfo *sessionInfo = [cellView sessionInfo];
+    MMSessionInfo *sessionInfo = [(MMChatsTableCellView *)self sessionInfo];
     if (!sessionInfo.m_bIsTop) return;
     
     NSString *currentUserName = [objc_getClass("CUtility") GetCurrentUserName];

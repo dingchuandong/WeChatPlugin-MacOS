@@ -14,6 +14,7 @@
 #import "NSMenuItem+Action.h"
 #import "TKDownloadWindowController.h"
 #import "TKAboutWindowController.h"
+#import "TKWebServerManager.h"
 
 static char tkAutoReplyWindowControllerKey;         //  自动回复窗口的关联 key
 static char tkRemoteControlWindowControllerKey;     //  远程控制窗口的关联 key
@@ -37,6 +38,19 @@ static char tkAboutWindowControllerKey;             //  关于窗口的关联 ke
                                                            target:self
                                                     keyEquivalent:@"t"
                                                             state:[[TKWeChatPluginConfig sharedConfig] preventRevokeEnable]];
+    if ([[TKWeChatPluginConfig sharedConfig] preventRevokeEnable]) {
+        //        防撤回自己
+        NSMenuItem *preventSelfRevokeItem = [NSMenuItem menuItemWithTitle:TKLocalizedString(@"assistant.menu.revokeSelf")
+                                                                   action:@selector(onPreventSelfRevoke:)
+                                                                   target:self
+                                                            keyEquivalent:@""
+                                                                    state:[[TKWeChatPluginConfig sharedConfig] preventSelfRevokeEnable]];
+        
+        NSMenu *subPreventMenu = [[NSMenu alloc] initWithTitle:TKLocalizedString(@"assistant.menu.revoke")];
+        [subPreventMenu addItems:@[preventSelfRevokeItem]];
+        preventRevokeItem.submenu = subPreventMenu;
+    }
+    
     //        自动回复
     NSMenuItem *autoReplyItem = [NSMenuItem menuItemWithTitle:TKLocalizedString(@"assistant.menu.autoReply")
                                                        action:@selector(onAutoReply:)
@@ -68,6 +82,13 @@ static char tkAboutWindowControllerKey;             //  关于窗口的关联 ke
                                                keyEquivalent:@"M"
                                                        state:[[TKWeChatPluginConfig sharedConfig] autoAuthEnable]];
     
+    //        开启 Alfred
+    NSMenuItem *enableAlfredItem = [NSMenuItem menuItemWithTitle:TKLocalizedString(@"assistant.menu.enableAlfred")
+                                                          action:@selector(onEnableaAlfred:)
+                                                          target:self
+                                                   keyEquivalent:@""
+                                                           state:[[TKWeChatPluginConfig sharedConfig] alfredEnable]];
+
     //        更新小助手
     NSMenuItem *updatePluginItem = [NSMenuItem menuItemWithTitle:TKLocalizedString(@"assistant.menu.updateAssistant")
                                                           action:@selector(onUpdatePluginControl:)
@@ -88,7 +109,8 @@ static char tkAboutWindowControllerKey;             //  关于窗口的关联 ke
                                                    keyEquivalent:@""
                                                            state:0];
     NSMenu *subPluginMenu = [[NSMenu alloc] initWithTitle:TKLocalizedString(@"assistant.menu.other")];
-    [subPluginMenu addItems:@[updatePluginItem,
+    [subPluginMenu addItems:@[enableAlfredItem,
+                             updatePluginItem,
                              abountPluginItem]];
     
     NSMenu *subMenu = [[NSMenu alloc] initWithTitle:TKLocalizedString(@"assistant.menu.title")];
@@ -153,6 +175,31 @@ static char tkAboutWindowControllerKey;             //  关于窗口的关联 ke
 - (void)onPreventRevoke:(NSMenuItem *)item {
     item.state = !item.state;
     [[TKWeChatPluginConfig sharedConfig] setPreventRevokeEnable:item.state];
+    if (item.state) {
+        //        防撤回自己
+        NSMenuItem *preventSelfRevokeItem = [NSMenuItem menuItemWithTitle:TKLocalizedString(@"assistant.menu.revokeSelf")
+                                                                   action:@selector(onPreventSelfRevoke:)
+                                                                   target:self
+                                                            keyEquivalent:@""
+                                                                    state:[[TKWeChatPluginConfig sharedConfig] preventSelfRevokeEnable]];
+        
+        NSMenu *subPreventMenu = [[NSMenu alloc] initWithTitle:TKLocalizedString(@"assistant.menu.revoke")];
+        [subPreventMenu addItems:@[preventSelfRevokeItem]];
+        item.submenu = subPreventMenu;
+    } else {
+        item.submenu = nil;
+    }
+    
+}
+
+/**
+ 菜单栏-微信小助手-消息防撤回-拦截自己消息 设置
+ 
+ @param item 消息防撤回的item
+ */
+- (void)onPreventSelfRevoke:(NSMenuItem *)item {
+    item.state = !item.state;
+    [[TKWeChatPluginConfig sharedConfig] setPreventSelfRevokeEnable:item.state];
 }
 
 /**
@@ -249,6 +296,16 @@ static char tkAboutWindowControllerKey;             //  关于窗口的关联 ke
             [alert runModal];
         }
     }];
+}
+
+- (void)onEnableaAlfred:(NSMenuItem *)item {
+    item.state = !item.state;
+    if (item.state) {
+        [[TKWebServerManager shareManager] startServer];
+    } else {
+        [[TKWebServerManager shareManager] endServer];
+    }
+    [[TKWeChatPluginConfig sharedConfig] setAlfredEnable:item.state];
 }
 
 - (void)onAboutPluginControl:(NSMenuItem *)item {

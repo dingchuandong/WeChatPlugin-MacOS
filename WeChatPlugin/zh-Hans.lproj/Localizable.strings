@@ -10,12 +10,14 @@
 //  菜单栏
 "assistant.menu.title" = "微信小助手";
 "assistant.menu.revoke" = "开启消息防撤回";
+"assistant.menu.revokeSelf" = "拦截自己撤回消息";
 "assistant.menu.autoReply" = "自动回复设置";
 "assistant.menu.newWeChat" = "登录新微信";
 "assistant.menu.remoteControl" = "远程控制mac";
 "assistant.menu.windowSticky" = "微信窗口置顶";
 "assistant.menu.freeLogin" = "免认证登录";
 "assistant.menu.other" = "小助手🌚";
+"assistant.menu.enableAlfred" = "开启 Alfred 功能";
 "assistant.menu.updateAssistant" = "更新小助手…";
 "assistant.menu.aboutAssistant" = "关于小助手";
 
@@ -40,6 +42,7 @@
 "assistant.chat.unMultiSelect" = "取消多选";
 "assistant.chat.readAll" = "一键已读";
 "assistant.chat.clearEmpty" = "清除空会话";
+"assistant.chat.remove" = "移除";
 
 //  远程控制相关
 "assistant.remoteControl.getList" = "获取指令";
@@ -120,5 +123,9 @@
 
 //  alfred 搜索
 "assistant.search.member" = "成员：";
+"assistant.search.friend" = "[好友]";
 "assistant.search.group" = "[群聊]";
-
+"assistant.search.official" = "[公众号]";
+"assistant.search.chatlog" = "以下为聊天记录👇🏻";
+"assistant.search.message.unread" = "未读";
+"assistant.search.yesterday" = "昨天";

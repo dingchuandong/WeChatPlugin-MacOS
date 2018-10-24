@@ -122,10 +122,14 @@
  hook 微信撤回消息
  
  */
-- (void)hook_onRevokeMsg:(id)msg {
+- (void)hook_onRevokeMsg:(id)msgData {
     if (![[TKWeChatPluginConfig sharedConfig] preventRevokeEnable]) {
-        [self hook_onRevokeMsg:msg];
+        [self hook_onRevokeMsg:msgData];
         return;
+    }
+    id msg = msgData;
+    if ([msgData isKindOfClass:objc_getClass("MessageData")]) {
+        msg = [msgData valueForKey:@"msgContent"];
     }
     if ([msg rangeOfString:@"<sysmsg"].length <= 0) return;
     
@@ -151,45 +155,12 @@
         //      获取原始的撤回提示消息
         MessageService *msgService = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("MessageService")];
         MessageData *revokeMsgData = [msgService GetMsgData:session svrId:[newmsgid integerValue]];
-        NSString *msgContent = [revokeMsgData getRealMessageContent];
-
-        NSString *msgType;
-        if (revokeMsgData.messageType == 1) {
-            msgType = @"";
-        } else if ([revokeMsgData isCustomEmojiMsg]) {
-            msgType = TKLocalizedString(@"assistant.revokeType.emoji");
-        } else if ([revokeMsgData isImgMsg]) {
-            msgType = TKLocalizedString(@"assistant.revokeType.image");
-        } else if ([revokeMsgData isVideoMsg]) {
-            msgType = TKLocalizedString(@"assistant.revokeType.video");
-        } else if ([revokeMsgData isVoiceMsg]) {
-            msgType = TKLocalizedString(@"assistant.revokeType.voice");
-        } else {
-            msgType = TKLocalizedString(@"assistant.revokeType.other");
+        if ([revokeMsgData isSendFromSelf] && ![[TKWeChatPluginConfig sharedConfig] preventSelfRevokeEnable]) { 
+            [self hook_onRevokeMsg:msgData];
+            return;
         }
-        
-        NSString *newMsgContent = [NSString stringWithFormat:@"%@ \n%@",TKLocalizedString(@"assistant.revoke.otherMessage.tip"), msgType];
-        //      判断是否是自己发起撤回
-        if ([revokeMsgData isSendFromSelf]) {
-            if (revokeMsgData.messageType == 1) {       // 判断是否为文本消息
-                newMsgContent = [NSString stringWithFormat:@"%@\n %@",TKLocalizedString(@"assistant.revoke.selfMessage.tip"), msgContent];
-            } else {
-                newMsgContent = [NSString stringWithFormat:@"%@\n %@",TKLocalizedString(@"assistant.revoke.selfMessage.tip"), msgType];
-            }
-        } else {
-            NSString *displayName = [revokeMsgData groupChatSenderDisplayName];
-            if (revokeMsgData.messageType == 1) {
-                if ([revokeMsgData isChatRoomMessage]) {
-                    newMsgContent = [NSString stringWithFormat:@"%@\n%@ : %@",TKLocalizedString(@"assistant.revoke.otherMessage.tip"), displayName, msgContent];
-                } else {
-                    newMsgContent = [NSString stringWithFormat:@"%@\n%@",TKLocalizedString(@"assistant.revoke.otherMessage.tip"), msgContent];
-                }
-            } else {
-                if ([revokeMsgData isChatRoomMessage]) {
-                    newMsgContent = [NSString stringWithFormat:@"%@ \n %@ : %@",TKLocalizedString(@"assistant.revoke.otherMessage.tip"), displayName, msgType];
-                }
-            }
-        }
+        NSString *msgContent = [[TKMessageManager shareManager] getMessageContentWithData:revokeMsgData];
+        NSString *newMsgContent = [NSString stringWithFormat:@"%@ \n%@",TKLocalizedString(@"assistant.revoke.otherMessage.tip"), msgContent];
         MessageData *newMsgData = ({
             MessageData *msg = [[objc_getClass("MessageData") alloc] initWithMsgType:0x2710];
             [msg setFromUsrName:revokeMsgData.toUsrName];
@@ -256,7 +227,7 @@
         if ([instanceUserName isEqualToString:currentUserName]) {
             MessageService *service = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("MessageService")];
             [service SendTextMessage:currentUserName toUsrName:chatName msgText:notification.response.string atUserList:nil];
-            [service ClearUnRead:chatName FromID:0 ToID:0];
+            [[TKMessageManager shareManager] clearUnRead:chatName];
         }
     } else {
         [self hook_userNotificationCenter:notificationCenter didActivateNotification:notification];
@@ -289,15 +260,21 @@
     [self hook_onAuthOK:arg1];
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [[TKWebServerManager shareManager] startServer];
+        if ([[TKWeChatPluginConfig sharedConfig] alfredEnable]) {
+            [[TKWebServerManager shareManager] startServer];
+        }
         NSMenu *mainMenu = [[NSApplication sharedApplication] mainMenu];
         NSMenuItem *pluginMenu = mainMenu.itemArray.lastObject;
         pluginMenu.enabled = YES;
+        NSMenuItem *preventMenu = pluginMenu.submenu.itemArray.firstObject;
+        preventMenu.enabled = YES;
     });
 }
 
 - (void)hook_sendLogoutCGIWithCompletion:(id)arg1 {
-    [[TKWebServerManager shareManager] endServer];
+    if ([[TKWeChatPluginConfig sharedConfig] alfredEnable]) {
+        [[TKWebServerManager shareManager] endServer];
+    }
     
     BOOL autoAuthEnable = [[TKWeChatPluginConfig sharedConfig] autoAuthEnable];
     WeChat *wechat = [objc_getClass("WeChat") sharedInstance];
@@ -482,6 +459,11 @@
  @param addMsg 接收的消息
  */
 - (void)remoteControlWithMsg:(AddMsg *)addMsg {
+    NSDate *now = [NSDate date];
+    NSTimeInterval nowSecond = now.timeIntervalSince1970;
+    if (nowSecond - addMsg.createTime > 10) {      // 若是10秒前的消息，则不进行远程控制。
+        return;
+    }
     if (addMsg.msgType == 1 || addMsg.msgType == 3) {
         [TKRemoteControlManager executeRemoteControlCommandWithMsg:addMsg.content.string];
     } else if (addMsg.msgType == 34) {
